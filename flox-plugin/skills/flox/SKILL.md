@@ -1,6 +1,6 @@
 ---
 name: flox
-description: Expert guidance for creating and managing Flox environments. Use this when working with Flox manifests, package installation, services, builds, or environment composition.
+description: Use this skill for all things development environment and deployment related, including: package managment, services, builds and package distribution, containerization, envimonment composition and layering.
 ---
 
 # Flox Environment Creation Quick Guide

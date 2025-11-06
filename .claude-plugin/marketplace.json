@@ -7,7 +7,7 @@
     {
       "name": "flox",
       "source": "./flox-plugin",
-      "description": "Expert guidance for creating and managing Flox environments, including package installation, services, builds, and environment composition"
+      "description": "Flox development environment and deployment plugin. Includes expert guidance for package management, services, builds and package distribution, containerization, environment composition and layering. Works with the Flox MCP server for enhanced functionality."
     }
   ]
 }
