@@ -1,3 +1,8 @@
+---
+name: flox-builds
+description: Building and packaging applications with Flox. Use for manifest builds, Nix expression builds, sandbox modes, multi-stage builds, and packaging assets.
+---
+
 # Flox Build System Guide
 
 ## Build System Overview
@@ -18,6 +23,16 @@ Nix expression builds:
 - Are functional. A Nix build is defined as a pure function of its declared inputs
 
 You can mix both approaches in the same project, but package names must be unique.
+
+## Core Commands
+
+```bash
+flox build                      # Build all targets
+flox build app docs             # Build specific targets
+flox build -d /path/to/project  # Build in another directory
+flox build -v                   # Verbose output
+flox build .#hello              # Build specific Nix expression
+```
 
 ## Manifest Builds
 
@@ -157,6 +172,25 @@ sandbox = "pure"
 
 `${bin.version}` resolves because both builds share the same manifest.
 
+### Go with vendored dependencies
+
+```toml
+[build.vendor]
+command = '''
+  go mod vendor
+  mkdir -p $out/vendor
+  cp -r vendor/* $out/vendor/
+'''
+sandbox = "off"
+
+[build.app]
+command = '''
+  cp -r ${vendor}/vendor ./
+  go build -mod=vendor -o $out/bin/myapp
+'''
+sandbox = "pure"
+```
+
 ## Trimming Runtime Dependencies
 
 By default, every package in the `toplevel` install-group becomes a runtime dependency of your build's closure—even if it was only needed at compile time.
@@ -229,18 +263,6 @@ command = '''
 
 Teams install these packages and reference them via `$FLOX_ENV/etc/nginx.conf` or `$FLOX_ENV/share/proto`.
 
-## Command Reference
-
-**`flox build [pkgs…]`** Run builds; default = all.
-
-**`-d, --dir <path>`** Build the environment rooted at `<path>/.flox`.
-
-**`-v` / `-vv`** Increase log verbosity.
-
-**`-q`** Quiet mode.
-
-**`--help`** Detailed CLI help.
-
 ## Nix Expression Builds
 
 You can write a Nix expression instead of (or in addition to) defining a manifest build.
@@ -304,57 +326,79 @@ hello.overrideAttrs (oldAttrs: {
 - `flox build .#hello` - build specific
 - `git add .flox/pkgs/*` - track files
 
-## Publishing to Flox Catalog
+## Language-Specific Build Examples
 
-### Prerequisites
-Before publishing:
-- Package defined in `[build]` section or `.flox/pkgs/`
-- Environment in Git repo with configured remote
-- Clean working tree (no uncommitted changes)
-- Current commit pushed to remote
-- All build files tracked by Git
-- At least one package installed in `[install]`
+### Python Application
 
-### Publishing Commands
-```bash
-# Publish single package
-flox publish my_package
+```toml
+[build.myapp]
+command = '''
+  mkdir -p $out/bin $out/share/myapp
 
-# Publish all packages
-flox publish
+  # Copy application code
+  cp -r src/* $out/share/myapp/
+  cp requirements.txt $out/share/myapp/
 
-# Publish to organization
-flox publish -o myorg my_package
-
-# Publish to personal namespace (for testing)
-flox publish -o mypersonalhandle my_package
+  # Create wrapper script
+  cat > $out/bin/myapp << 'EOF'
+#!/usr/bin/env bash
+APP_ROOT="$(dirname "$(dirname "$(readlink -f "$0")")")"
+export PYTHONPATH="$APP_ROOT/share/myapp:$PYTHONPATH"
+exec python3 "$APP_ROOT/share/myapp/main.py" "$@"
+EOF
+  chmod +x $out/bin/myapp
+'''
+version = "1.0.0"
 ```
 
-### Key Points
-- Personal catalogs: Only visible to you (good for testing)
-- Organization catalogs: Shared with team members (paid feature)
-- Published packages appear as `<catalog>/<package-name>`
-- Example: User "alice" publishes "hello" → available as `alice/hello`
-- Packages downloadable via `flox install <catalog>/<package>`
+### Node.js Application
 
-### Build Validation
-Flox clones your repo to a temp location and performs a clean build to ensure reproducibility. Only packages that build successfully in this clean environment can be published.
+```toml
+[build.webapp]
+command = '''
+  npm ci
+  npm run build
 
-### After Publishing
-- Package available in `flox search`, `flox show`, `flox install`
-- Metadata sent to Flox servers
-- Package binaries uploaded to Catalog Store
-- Install with: `flox install <catalog>/<package>`
+  mkdir -p $out/share/webapp
+  cp -r dist/* $out/share/webapp/
+  cp package.json package-lock.json $out/share/webapp/
 
-### Real-world Publishing Workflow
-**Fork-based development pattern:**
-1. Fork upstream repo (e.g., `user/project` from `upstream/project`)
-2. Add `.flox/` to fork with build definitions
-3. `git push origin master` (or main - check with `git branch`)
-4. `flox publish -o username package-name`
+  cd $out/share/webapp && npm ci --production
+'''
+version = "1.0.0"
+```
 
-**Common gotchas:**
-- **Branch names**: Many repos use `master` not `main` - check with `git branch`
-- **Auth required**: Run `flox auth login` before first publish
-- **Clean git state**: Commit and push ALL changes before `flox publish`
-- **runtime-packages**: List only what package needs at runtime, not build deps
+### Rust Binary
+
+```toml
+[build.cli]
+command = '''
+  cargo build --release
+  mkdir -p $out/bin
+  cp target/release/mycli $out/bin/
+'''
+version.command = "cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version'"
+```
+
+## Debugging Build Issues
+
+### Common Problems
+
+**Build hooks don't run**: `[hook]` scripts DO NOT execute during `flox build`
+
+**Package groups**: Only `toplevel` group packages available during builds
+
+**Network access**: Pure builds can't access network on Linux
+
+### Debugging Steps
+
+1. Check build output: `flox build -v`
+2. Inspect result: `ls -la result-<name>/`
+3. Test binary: `./result-<name>/bin/<name>`
+4. Check dependencies: `nix-store -q --references result-<name>`
+
+## Related Skills
+
+- **flox-environments** - Setting up build environments
+- **flox-publish** - Publishing built packages to catalogs
+- **flox-containers** - Building container images
