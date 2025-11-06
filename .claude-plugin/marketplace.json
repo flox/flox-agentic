@@ -1,0 +1,13 @@
+{
+  "name": "flox-marketplace",
+  "owner": {
+    "name": "Flox"
+  },
+  "plugins": [
+    {
+      "name": "flox",
+      "source": "./flox-plugin",
+      "description": "Expert guidance for creating and managing Flox environments, including package installation, services, builds, and environment composition"
+    }
+  ]
+}

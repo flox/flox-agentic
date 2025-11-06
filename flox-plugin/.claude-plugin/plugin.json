@@ -1,0 +1,8 @@
+{
+  "name": "flox",
+  "description": "Expert guidance for creating and managing Flox environments, including package installation, services, builds, and environment composition",
+  "version": "1.0.0",
+  "author": {
+    "name": "Flox"
+  }
+}
