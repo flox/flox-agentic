@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "flox-mcp": {
+      "command": "flox-mcp",
+      "installCommand": "flox install flox/flox-mcp-server"
+    }
+  }
+}
