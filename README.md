@@ -28,7 +28,8 @@ To install the Flox plugin in Claude Code:
 
 ### Install the Flox MCP Server
 
-To enable the Flox MCP server functionality, install into an environment, ideally your default environment.
+To enable the Flox MCP server functionality, install the Flox package into an environment, ideally your default environment.
+Since the MCP server uses the `stdio` transport, there's no service that runs and as long as `flox-mcp` is on path, it should work.
 
 ```bash
 flox install flox/flox-mcp-server
@@ -40,8 +41,37 @@ Or you can run it directly without installation using the `flox/flox-mcp-server`
 flox activate -r flox/flox-mcp-server
 ```
 
-The MCP server provides enhanced integration between Claude Code and Flox, enabling seamless environment management and workflow automation.  Better gaurdrails can be established since all environment management happens through MCP tool commands and does not require `bash` access.
+The MCP server provides enhanced integration between Claude (and other agents) and Flox,
+enabling seamless environment management and workflow automation.
+Better gaurdrails can be established since all environment management happens through MCP tool commands and does not require `bash` access.
 
+#### For Other Agents
+
+The Claude plugin handles configuration for the MCP server when used.  But it can be used alone and with other agents.
+
+##### Claude
+
+```bash
+# To install for Claude Code (per project):
+claude mcp add flox -- flox-mcp
+
+# To install for Claude Code (per user):
+claude mcp add --scope user flox -- flox-mcp
+```
+
+##### Cursor
+
+Make sure the MCP server is available (see Install above), and add it to your MCP configuration file at ~/.cursor/mcp.json:
+
+```json
+{
+  "mcpServers": {
+    "flox": {
+      "command": "flox-mcp"
+    }
+  }
+}
+```
 
 ## Requirements
 
