@@ -43,7 +43,7 @@ flox activate -r flox/flox-mcp-server
 
 The MCP server provides enhanced integration between Claude (and other agents) and Flox,
 enabling seamless environment management and workflow automation.
-Better gaurdrails can be established since all environment management happens through MCP tool commands and does not require `bash` access.
+Better guardrails can be established since all environment management happens through MCP tool commands and does not require `bash` access.
 
 #### For Other Agents
 
