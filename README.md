@@ -19,11 +19,18 @@ Once installed, the plugin automatically activates. Claude Code will use the app
 
 ### Install the Plugin
 
-To install the Flox plugin in Claude Code:
+To install the Flox plugin from within Claude Code:
 
 ```bash
 /plugin marketplace add flox/flox-agentic
-/plugin install flox@flox
+/plugin install flox@flox-agentic
+```
+
+Or from the command line:
+
+```bash
+claude plugin marketplace add flox/flox-agentic
+claude plugin install flox@flox-agentic
 ```
 
 ### Install the Flox MCP Server
