@@ -80,6 +80,21 @@ Make sure the MCP server is available (see Install above), and add it to your MC
 }
 ```
 
+#### Kiro
+
+For Kiro, you need to put a file in `.kiro/settings/mcp.json` for a workspace or in `~/.kiro/settings/mcp.json` for user-wide settings:
+
+```json
+{
+  "mcpServers": {
+    "flox": {
+      "command": "flox-mcp",
+      "args": []
+    }
+  }
+}
+```
+
 ## Requirements
 
 - Flox CLI installed and configured
