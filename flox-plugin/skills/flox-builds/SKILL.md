@@ -34,6 +34,61 @@ flox build -v                   # Verbose output
 flox build .#hello              # Build specific Nix expression
 ```
 
+## Development vs Runtime: The Two-Environment Pattern
+
+A common workflow involves **two separate environments**:
+
+### Development Environment (Build-Time)
+Contains source code, build tools, and build definitions:
+```toml
+# project-dev/.flox/env/manifest.toml (in git with source code)
+[install]
+gcc.pkg-path = "gcc13"
+make.pkg-path = "make"
+python.pkg-path = "python311Full"
+uv.pkg-path = "uv"
+
+[build.myapp]
+command = '''
+  make build
+  mkdir -p $out/bin
+  cp build/myapp $out/bin/
+'''
+version = "1.0.0"
+```
+
+**Workflow:**
+```bash
+cd project-dev
+flox activate
+flox build myapp
+flox publish -o myorg myapp
+```
+
+### Runtime Environment (Consume-Time)
+Contains only the published package and runtime dependencies:
+```toml
+# project-runtime/.flox/env/manifest.toml (can push to FloxHub)
+[install]
+myapp.pkg-path = "myorg/myapp"  # The published package
+```
+
+**Workflow:**
+```bash
+cd project-runtime
+flox init
+flox install myorg/myapp
+flox push  # Share runtime environment without source code
+```
+
+**Why separate environments?**
+- Development environment: Heavy (build tools, source code, dev dependencies)
+- Runtime environment: Lightweight (only published package and runtime needs)
+- Security: Runtime environments don't expose source code
+- Clarity: Clear separation between building and consuming
+
+**Note**: You can also install published packages into existing environments (other projects, production environments, etc.), not just dedicated runtime environments.
+
 ## Manifest Builds
 
 Flox treats a **manifest build** as a short, deterministic Bash script that runs inside an activated environment and copies its deliverables into `$out`. Anything copied there becomes a first-class, versioned package that can later be published and installed like any other catalog artifact.
@@ -65,11 +120,7 @@ Flox treats a **manifest build** as a short, deterministic Bash script that runs
   uv pip install --python "$venv/bin/python" -r "$APP_ROOT/share/myapp/requirements.txt"
   EOF
   ```
-- **Dual-environment workflow**: Build in `project-build/`, use package in `project/`:
-  ```bash
-  cd project-build && flox build myapp
-  cd ../project && flox install owner/myapp
-  ```
+- **Dual-environment workflow**: Use one environment for building (`project-dev/`), another for consuming (`project-runtime/`). See "Development vs Runtime: The Two-Environment Pattern" section above for details.
 
 ### Build Definition Syntax
 
@@ -399,6 +450,6 @@ version.command = "cargo metadata --no-deps --format-version 1 | jq -r '.package
 
 ## Related Skills
 
-- **flox-environments** - Setting up build environments
-- **flox-publish** - Publishing built packages to catalogs
+- **flox-environments** - Setting up development and runtime environments
+- **flox-publish** - Publishing built packages to catalogs, understanding the dev→publish→runtime workflow
 - **flox-containers** - Building container images

@@ -11,6 +11,25 @@ description: Sharing and composing Flox environments. Use for environment compos
 **Remote Environments**: Shared environments via FloxHub
 **Team Collaboration**: Reusable, shareable environment stacks
 
+## Understanding Environment Sharing
+
+**What gets shared**: When you share an environment (via git or FloxHub), you are sharing ONLY the environment definition (the `.flox/` directory). This includes:
+- Package specifications and versions
+- Environment variables
+- Build definitions
+- Hooks and services configuration
+
+**What does NOT get shared**:
+- Source code (unless in the same git repo)
+- Built binaries/artifacts
+- Local data or cache
+
+**Two sharing mechanisms**:
+1. **Git**: Commit `.flox/` alongside your source code (recommended for development environments)
+2. **FloxHub**: Push environment definition only using `flox push` (useful for runtime environments or shared development environments)
+
+**This is different from publishing packages** (see **flox-publish** skill), where you build and distribute the actual binaries/artifacts.
+
 ## Core Commands
 
 ```bash
@@ -168,6 +187,22 @@ flox push
 # flox activate -r yourusername/your-repo
 ```
 
+### Choosing Between Git and FloxHub
+
+**Commit `.flox/` to Git when:**
+- Environment is for development (includes build tools)
+- Environment lives alongside source code
+- You want version control history for environment changes
+- Team already uses git for collaboration
+
+**Push to FloxHub when:**
+- Environment is for runtime/production (no source code needed)
+- Creating shared base environments used across multiple projects
+- Environment needs to be independently versioned from source code
+- You want to share environment without exposing source code
+
+**Recommended pattern**: Commit development environments to git with source code; push runtime environments to FloxHub.
+
 ## Team Collaboration Patterns
 
 ### Base + Specialization
@@ -240,40 +275,47 @@ environments = [
 ]
 ```
 
-### Development vs Production
+### Development vs Runtime Environments
 
-**Development environment (permissive):**
+**Development environment (for building):**
 ```toml
-# project/dev
+# project-dev (committed to git with source code)
 [install]
+gcc.pkg-path = "gcc13"
+make.pkg-path = "make"
 debugpy.pkg-path = "python311Packages.debugpy"
 pytest.pkg-path = "python311Packages.pytest"
+
+[build.myapp]
+command = '''
+  make release
+  mkdir -p $out/bin
+  cp build/myapp $out/bin/
+'''
+version = "1.0.0"
 
 [vars]
 DEBUG = "true"
 LOG_LEVEL = "debug"
 ```
 
-**Production environment (minimal):**
+Developers commit this `.flox/` directory to git with the source code. Other developers `git clone` and `flox activate` to get the same development environment.
+
+**Runtime environment (for consuming):**
 ```toml
-# project/prod
+# project-runtime (pushed to FloxHub, no source code)
 [install]
-python.pkg-path = "python311"
-# No dev tools
+myapp.pkg-path = "myorg/myapp"  # Published package, not source
 
 [vars]
 DEBUG = "false"
 LOG_LEVEL = "info"
+MYAPP_CONFIG = "$FLOX_ENV_CACHE/config"
 ```
 
-**Use separately or compose:**
-```bash
-# Activate prod environment
-flox activate -r project/prod
+After publishing `myapp`, consumers create this runtime environment and install the published package. The runtime environment can be pushed to FloxHub and shared without exposing source code.
 
-# Or activate dev environment
-flox activate -r project/dev
-```
+**Key distinction**: Development environments contain build tools and source code; runtime environments contain published packages (binaries/artifacts).
 
 (See **flox-environments** skill for layering environments at runtime)
 
@@ -363,4 +405,4 @@ flox list -c
 - **flox-environments** - Creating base environments
 - **flox-services** - Sharing service configurations
 - **flox-containers** - Deploying shared environments
-- **flox-publish** - Publishing packages vs environments
+- **flox-publish** - Publishing built packages (binaries/artifacts) vs sharing environments (definitions only)
