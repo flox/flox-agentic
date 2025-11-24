@@ -12,7 +12,7 @@ This project includes specialized knowledge and tooling for Flox workflows, best
 
 The Flox MCP (Model Context Protocol) server provides agents with direct access to Flox functionality through structured tool interfaces. It enables seamless environment management and workflow automation with better guardrails, since all environment management happens through MCP tool commands and does not require `bash` access.
 
-The MCP server uses the `stdio` transport, so there's no service that runs—as long as `flox-mcp` is on your path, it will work.
+The MCP server uses the `stdio` transport, so there's no service that runs—as long as `flox-mcp` is on your PATH, it will work.
 
 ### Skills Library
 
@@ -84,7 +84,7 @@ First, install the Flox MCP server package into an environment, ideally your def
 flox install flox/flox-mcp-server
 ```
 
-Or you can run it directly without installation using the `flox/flox-mcp-server` remote environment:
+Or you can make it available without installing by running the `flox/flox-mcp-server` remote environment:
 
 ```bash
 flox activate -r flox/flox-mcp-server
@@ -94,7 +94,7 @@ flox activate -r flox/flox-mcp-server
 
 #### Claude Code
 
-The Flox plugin for Claude Code provides deep expertise in Flox, including package management, environment composition, service orchestration, build system configuration, containerization, publishing, and CUDA support.
+The Flox plugin for Claude Code provides comprehensive Flox integration, including package management, environment composition, service orchestration, build system configuration, containerization, publishing, and CUDA support. The plugin includes both MCP server configuration and the Skills library as native Claude skills.
 
 **Install the Plugin:**
 
