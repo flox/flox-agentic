@@ -15,6 +15,53 @@ flox publish -o myuser package  # Publish to personal namespace
 flox auth login                 # Authenticate before publishing
 ```
 
+## Publishing Workflow: Development to Runtime
+
+Publishing packages enables a clear separation between **development** and **runtime/consumption**:
+
+### The Complete Workflow
+
+**Phase 1: Development Environment**
+```toml
+# .flox/env/manifest.toml (in git with source code)
+[install]
+gcc.pkg-path = "gcc13"
+make.pkg-path = "make"
+python.pkg-path = "python311Full"
+
+[build.myapp]
+command = '''
+  python setup.py build
+  mkdir -p $out/bin
+  cp build/myapp $out/bin/
+'''
+version = "1.0.0"
+```
+
+Developers work in this environment, commit `.flox/` to git alongside source code.
+
+**Phase 2: Build and Publish**
+```bash
+# Build the package
+flox build myapp
+
+# Publish to catalog
+flox publish -o myorg myapp
+```
+
+The published package contains BINARIES/ARTIFACTS (what's in `$out/`), NOT source code.
+
+**Phase 3: Runtime Environment**
+```toml
+# Separate environment (can be pushed to FloxHub)
+[install]
+myapp.pkg-path = "myorg/myapp"  # The published package
+```
+
+Consumers create runtime environments and install the published package. No build tools needed, no source code exposed.
+
+**Key insight**: You don't install the published package back into the development environment - that would be circular. Published packages are installed into OTHER environments (different projects, production, etc.).
+
 ## Publishing to Flox Catalog
 
 ### Prerequisites
@@ -90,20 +137,70 @@ flox show myorg/my_package
 flox install myorg/my_package
 ```
 
-## Real-world Publishing Workflow
+### What Gets Published
 
-### Fork-based development pattern:
+**Published packages contain:**
+- Binaries and compiled artifacts (everything in `$out/`)
+- Runtime dependencies specified in `runtime-packages`
+- Package metadata (version, description)
+
+**Published packages do NOT contain:**
+- Source code (unless explicitly copied to `$out/`)
+- Build tools or build-time dependencies
+- Development environment configuration
+- The `.flox/` directory itself
+
+This separation allows you to share built artifacts without exposing source code.
+
+## Real-world Publishing Workflows
+
+### Application Development Workflow
+
+**Developer workflow:**
+1. Create development environment with build tools:
+   ```bash
+   mkdir myapp && cd myapp
+   flox init
+   flox install gcc make python311Full
+   ```
+
+2. Add source code and build definition to `.flox/env/manifest.toml`:
+   ```toml
+   [build.myapp]
+   command = '''make && cp myapp $out/bin/'''
+   version = "1.0.0"
+   ```
+
+3. Commit to git (environment definition + source code):
+   ```bash
+   git add .flox/ src/
+   git commit -m "Add development environment and source"
+   git push origin main
+   ```
+
+4. Build and publish package (binaries/artifacts):
+   ```bash
+   flox build myapp
+   flox publish -o myorg myapp
+   ```
+
+**Other developers:**
+- Clone repo: `git clone <repo> && cd myapp && flox activate`
+- Get the same development environment with build tools
+
+**Consumers:**
+- Create new runtime environment: `flox init && flox install myorg/myapp`
+- OR install into existing environment: `flox install myorg/myapp`
+- Get the BUILT package (binaries), not source code
+- Can push runtime environment to FloxHub without exposing source
+
+### Fork-based Development Pattern
+
 1. Fork upstream repo (e.g., `user/project` from `upstream/project`)
 2. Add `.flox/` to fork with build definitions
-3. `git push origin master` (or main - check with `git branch`)
-4. `flox publish -o username package-name`
-
-### In-house application pattern:
-1. Create app repo with `.flox/` directory
-2. Define build in `[build.myapp]` section
-3. Commit and push to remote
-4. `flox publish -o myorg myapp`
-5. Team installs with `flox install myorg/myapp`
+3. Commit and push: `git push origin main`
+4. Publish package: `flox publish -o username package-name`
+5. Others can install: `flox install username/package-name`
 
 ## Versioning Strategies
 
@@ -379,6 +476,6 @@ runtime-packages = ["libssl"]  # Only runtime deps
 
 ## Related Skills
 
-- **flox-builds** - Building packages before publishing
-- **flox-environments** - Setting up build environments
-- **flox-sharing** - Sharing environments vs publishing packages
+- **flox-builds** - Building packages before publishing, dual-environment workflow
+- **flox-environments** - Setting up development and runtime environments
+- **flox-sharing** - Sharing environment definitions (via git or FloxHub) vs publishing packages (binaries/artifacts)
