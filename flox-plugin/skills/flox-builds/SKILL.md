@@ -86,6 +86,7 @@ flox push  # Share runtime environment without source code
 - Runtime environment: Lightweight (only published package and runtime needs)
 - Security: Runtime environments don't expose source code
 - Clarity: Clear separation between building and consuming
+- Rollback: Can rollback the live generation of a runtime environment without affecting the development environment
 
 **Note**: You can also install published packages into existing environments (other projects, production environments, etc.), not just dedicated runtime environments.
 

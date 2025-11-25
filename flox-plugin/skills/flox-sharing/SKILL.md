@@ -13,20 +13,19 @@ description: Sharing and composing Flox environments. Use for environment compos
 
 ## Understanding Environment Sharing
 
-**What gets shared**: When you share an environment (via git or FloxHub), you are sharing ONLY the environment definition (the `.flox/` directory). This includes:
+**The `.flox/` directory contains the environment definition**:
 - Package specifications and versions
 - Environment variables
 - Build definitions
 - Hooks and services configuration
 
-**What does NOT get shared**:
-- Source code (unless in the same git repo)
-- Built binaries/artifacts
+**The environment definition does NOT include**:
+- Built binaries/artifacts (those are created by builds and can be published as packages)
 - Local data or cache
 
 **Two sharing mechanisms**:
-1. **Git**: Commit `.flox/` alongside your source code (recommended for development environments)
-2. **FloxHub**: Push environment definition only using `flox push` (useful for runtime environments or shared development environments)
+1. **Git**: Commit `.flox/` directory to git. When used with development environments, this is typically alongside your source code in the same repository. Other developers clone the repo and get both the environment definition and source code.
+2. **FloxHub**: Push environment definition only using `flox push`. This shares ONLY the `.flox/` directory, not any source code or other files. Useful for runtime environments or shared base environments used across multiple projects.
 
 **This is different from publishing packages** (see **flox-publish** skill), where you build and distribute the actual binaries/artifacts.
 
