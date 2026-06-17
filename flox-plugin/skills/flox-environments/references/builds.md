@@ -1,8 +1,3 @@
----
-name: flox-builds
-description: Building and packaging applications with Flox. Use for manifest builds, Nix expression builds, sandbox modes, multi-stage builds, and packaging assets.
----
-
 # Flox Build System Guide
 
 ## Build System Overview
@@ -449,8 +444,3 @@ version.command = "cargo metadata --no-deps --format-version 1 | jq -r '.package
 3. Test binary: `./result-<name>/bin/<name>`
 4. Check dependencies: `nix-store -q --references result-<name>`
 
-## Related Skills
-
-- **flox-environments** - Setting up development and runtime environments
-- **flox-publish** - Publishing built packages to catalogs, understanding the dev→publish→runtime workflow
-- **flox-containers** - Building container images

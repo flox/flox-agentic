@@ -10,7 +10,7 @@ This project includes specialized knowledge and tooling for Flox workflows, best
 
 ### Skills Library
 
-The repository includes five specialized skills, each focused on a specific aspect of Flox:
+The repository includes four specialized skills, each focused on a specific aspect of Flox:
 
 #### 1. **flox-environments**
 Manage reproducible development environments with Flox. This is the foundational skill that should be used first when creating any new project. Covers:
@@ -20,30 +20,23 @@ Manage reproducible development environments with Flox. This is the foundational
 - Reproducible development workflows
 - Sharing, composing, and layering environments — composition via `[include]`, remote environments, FloxHub, team collaboration (see `references/sharing.md`)
 - Running services, background processes, and databases (see `references/services.md`)
+- Building and packaging applications — manifest/Nix builds, sandbox modes, multi-stage builds (see `references/builds.md`)
 
-#### 2. **flox-builds**
-Building and packaging applications with Flox. Covers:
-- Manifest builds for quick iteration
-- Nix expression builds for guaranteed reproducibility
-- Sandbox modes and build isolation
-- Multi-stage builds
-- Packaging assets and artifacts
-
-#### 3. **flox-containers**
+#### 2. **flox-containers**
 Containerizing Flox environments with Docker/Podman. Covers:
 - Creating container images from Flox environments
 - OCI exports
 - Multi-stage container builds
 - Deployment workflows
 
-#### 4. **flox-publish**
+#### 3. **flox-publish**
 Publishing packages to Flox for distribution and sharing. Covers:
 - Package publishing workflows
 - Organization and personal namespace management
 - Package versioning and distribution
 - Sharing built packages across teams
 
-#### 5. **flox-cuda**
+#### 4. **flox-cuda**
 CUDA and GPU development with Flox (Linux only). Covers:
 - NVIDIA CUDA toolkit setup
 - GPU computing workflows
@@ -109,7 +102,6 @@ Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 
 For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
 - `skills/flox-environments/SKILL.md`
-- `skills/flox-builds/SKILL.md`
 - `skills/flox-containers/SKILL.md`
 - `skills/flox-publish/SKILL.md`
 - `skills/flox-cuda/SKILL.md`

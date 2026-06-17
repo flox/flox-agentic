@@ -19,6 +19,8 @@ manifest sections, gotchas) and go well beyond general knowledge.
   → read `references/sharing.md`
 - **Services** — background processes, daemons, databases, logging, service
   debugging → read `references/services.md`
+- **Builds & packaging** — manifest builds, Nix-expression builds, sandbox
+  modes, multi-stage builds, packaging assets → read `references/builds.md`
 
 ## Working Style & Structure
 
