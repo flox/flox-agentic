@@ -1,8 +1,3 @@
----
-name: flox-publish
-description: Use for publishing user packages to flox for use in Flox environments.  Use for package distribution and sharing of builds defined in a flox environment.
----
-
 # Flox Package Publishing Guide
 
 ## Core Commands
@@ -474,8 +469,3 @@ libssl.pkg-path = "openssl"
 runtime-packages = ["libssl"]  # Only runtime deps
 ```
 
-## Related Skills
-
-- **flox-builds** - Building packages before publishing, dual-environment workflow
-- **flox-environments** - Setting up development and runtime environments
-- **flox-sharing** - Sharing environment definitions (via git or FloxHub) vs publishing packages (binaries/artifacts)

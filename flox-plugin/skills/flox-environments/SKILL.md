@@ -23,6 +23,8 @@ manifest sections, gotchas) and go well beyond general knowledge.
   modes, multi-stage builds, packaging assets → read `references/builds.md`
 - **Containers** — containerizing environments with Docker/Podman, OCI
   exports, multi-stage container builds, deployment → read `references/containers.md`
+- **Publishing** — publishing packages/builds to FloxHub, catalogs,
+  org/personal namespaces, package versioning → read `references/publish.md`
 
 ## Working Style & Structure
 

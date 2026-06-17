@@ -10,7 +10,7 @@ This project includes specialized knowledge and tooling for Flox workflows, best
 
 ### Skills Library
 
-The repository includes three specialized skills, each focused on a specific aspect of Flox:
+The repository includes two specialized skills, each focused on a specific aspect of Flox:
 
 #### 1. **flox-environments**
 Manage reproducible development environments with Flox. This is the foundational skill that should be used first when creating any new project. Covers:
@@ -22,15 +22,9 @@ Manage reproducible development environments with Flox. This is the foundational
 - Running services, background processes, and databases (see `references/services.md`)
 - Building and packaging applications — manifest/Nix builds, sandbox modes, multi-stage builds (see `references/builds.md`)
 - Containerizing environments with Docker/Podman — OCI exports, multi-stage container builds, deployment (see `references/containers.md`)
+- Publishing packages/builds to FloxHub — org/personal namespaces, versioning, distribution (see `references/publish.md`)
 
-#### 2. **flox-publish**
-Publishing packages to Flox for distribution and sharing. Covers:
-- Package publishing workflows
-- Organization and personal namespace management
-- Package versioning and distribution
-- Sharing built packages across teams
-
-#### 3. **flox-cuda**
+#### 2. **flox-cuda**
 CUDA and GPU development with Flox (Linux only). Covers:
 - NVIDIA CUDA toolkit setup
 - GPU computing workflows
@@ -96,7 +90,6 @@ Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 
 For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
 - `skills/flox-environments/SKILL.md`
-- `skills/flox-publish/SKILL.md`
 - `skills/flox-cuda/SKILL.md`
 
 ## Contributing
