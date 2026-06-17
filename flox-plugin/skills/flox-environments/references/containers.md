@@ -1,8 +1,3 @@
----
-name: flox-containers
-description: Containerizing Flox environments with Docker/Podman. Use for creating container images, OCI exports, multi-stage builds, and deployment workflows.
----
-
 # Flox Containerization Guide
 
 ## Core Commands
@@ -476,9 +471,3 @@ docker exec <container-id> flox list
 7. **Environment variables**: Make configuration overridable via env vars
 8. **Logging**: Log to stdout/stderr, not files
 
-## Related Skills
-
-- **flox-environments** - Creating environments to containerize
-- **flox-services** - Running services in containers
-- **flox-builds** - Building artifacts before containerizing
-- **flox-sharing** - Containerizing remote environments

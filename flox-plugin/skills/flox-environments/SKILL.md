@@ -21,6 +21,8 @@ manifest sections, gotchas) and go well beyond general knowledge.
   debugging → read `references/services.md`
 - **Builds & packaging** — manifest builds, Nix-expression builds, sandbox
   modes, multi-stage builds, packaging assets → read `references/builds.md`
+- **Containers** — containerizing environments with Docker/Podman, OCI
+  exports, multi-stage container builds, deployment → read `references/containers.md`
 
 ## Working Style & Structure
 
