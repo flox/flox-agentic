@@ -8,12 +8,14 @@ This project includes specialized knowledge and tooling for Flox workflows, best
 
 ## Components
 
-### Skills Library
+### The Flox Skill
 
-The repository includes two specialized skills, each focused on a specific aspect of Flox:
+The repository provides a single `flox` skill (`flox-environments`) covering the
+entire Flox development lifecycle. The top `SKILL.md` holds the core guidance and
+routes to detailed **reference files** for specialized topics (progressive
+disclosure). It is the foundational skill that should be used first when creating
+any new project. Covers:
 
-#### 1. **flox-environments**
-Manage reproducible development environments with Flox. This is the foundational skill that should be used first when creating any new project. Covers:
 - Installing packages and managing dependencies
 - Python, Node.js, and Go environment setup
 - Environment configuration and secrets management
@@ -23,14 +25,7 @@ Manage reproducible development environments with Flox. This is the foundational
 - Building and packaging applications — manifest/Nix builds, sandbox modes, multi-stage builds (see `references/builds.md`)
 - Containerizing environments with Docker/Podman — OCI exports, multi-stage container builds, deployment (see `references/containers.md`)
 - Publishing packages/builds to FloxHub — org/personal namespaces, versioning, distribution (see `references/publish.md`)
-
-#### 2. **flox-cuda**
-CUDA and GPU development with Flox (Linux only). Covers:
-- NVIDIA CUDA toolkit setup
-- GPU computing workflows
-- Deep learning framework integration
-- cuDNN configuration
-- Cross-platform GPU/CPU development
+- CUDA and GPU development (Linux) — NVIDIA CUDA toolkit, cuDNN, deep-learning frameworks, cross-platform GPU/CPU (see `references/cuda.md`)
 
 ## Installation
 
@@ -64,9 +59,7 @@ claude plugin install flox@flox-agentic
 **Getting Started:**
 
 Once installed, the plugin automatically activates. Claude Code will use the appropriate skill based on your task:
-- Creating a new project, or setting up services/databases? The **flox-environments** skill activates first
-- Building packages? The **flox-builds** skill helps with manifest or Nix builds
-- Deploying containers? The **flox-containers** skill assists with containerization
+- Creating a new project, setting up services/databases, building, containerizing, or publishing? The **flox-environments** skill activates first
 
 #### Other Agents (Cursor, Copilot, Windsurf, Gemini, and more)
 
@@ -78,8 +71,9 @@ Node.js):
 npx skills add flox/flox-agentic
 ```
 
-This installs all six Flox skills into your agent's context, covering
-environments (including sharing/composition), services, builds, containers, publishing, and CUDA.
+This installs the Flox skill into your agent's context, covering environments
+plus sharing/composition, services, builds, containers, publishing, and CUDA/GPU
+(via its reference files).
 Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 [many others](https://skills.sh).
 
@@ -88,9 +82,10 @@ Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 
 ## Documentation
 
-For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
-- `skills/flox-environments/SKILL.md`
-- `skills/flox-cuda/SKILL.md`
+The Flox skill lives in `skills/flox-environments/`:
+- `skills/flox-environments/SKILL.md` — core guidance + routing
+- `skills/flox-environments/references/` — detailed references: `sharing.md`, `services.md`,
+  `builds.md`, `containers.md`, `publish.md`, `cuda.md`
 
 ## Contributing
 

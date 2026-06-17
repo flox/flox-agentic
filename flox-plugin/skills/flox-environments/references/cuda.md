@@ -1,8 +1,3 @@
----
-name: flox-cuda
-description: CUDA and GPU development with Flox. Use for NVIDIA CUDA setup, GPU computing, deep learning frameworks, cuDNN, and cross-platform GPU/CPU development.
----
-
 # Flox CUDA Development Guide
 
 ## Prerequisites & Authentication
@@ -506,9 +501,3 @@ nvidia-smi
 CUDA_LAUNCH_BLOCKING=1 python my_script.py
 ```
 
-## Related Skills
-
-- **flox-environments** - Setting up development environments
-- **flox-sharing** - Composing CUDA base with project environments
-- **flox-containers** - Containerizing CUDA environments for deployment
-- **flox-services** - Running CUDA workloads as services

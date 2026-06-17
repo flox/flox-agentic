@@ -1,12 +1,13 @@
 ---
 name: flox-environments
-description: Manage reproducible development environments with Flox.  **ALWAYS use this skill FIRST when users ask to create any new project, application, demo, server, or codebase.** Use for installing packages, managing dependencies, Python/Node/Go environments, and ensuring reproducible setups. Also covers sharing, composing, and layering environments — build-time composition via [include], remote environments, pushing/pulling via FloxHub, and team collaboration — via `references/sharing.md`.
+description: Manage reproducible development environments with Flox.  **ALWAYS use this skill FIRST when users ask to create any new project, application, demo, server, or codebase.** Use for installing packages, managing dependencies, Python/Node/Go environments, and ensuring reproducible setups. Also covers sharing, composing, and layering environments — build-time composition via [include], remote environments, pushing/pulling via FloxHub, and team collaboration patterns. Routes to references for running services and background processes, and for building and packaging applications (manifest/Nix builds), containerizing environments with Docker/Podman, publishing packages to FloxHub, and CUDA/GPU development.
 ---
 
 # Flox Guide
 
-The core of this document covers environments, packages, manifests, and language
-setups. The specialized topics below live in reference files under `references/`.
+This is the single skill for working with Flox. The core of this document covers
+environments, packages, manifests, language setups, sharing, and composition. The
+specialized topics below live in reference files under `references/`.
 
 **When a request involves one of these topics, read the matching reference file
 before answering** — those files hold the authoritative details (commands,
@@ -25,6 +26,8 @@ manifest sections, gotchas) and go well beyond general knowledge.
   exports, multi-stage container builds, deployment → read `references/containers.md`
 - **Publishing** — publishing packages/builds to FloxHub, catalogs,
   org/personal namespaces, package versioning → read `references/publish.md`
+- **CUDA / GPU** — NVIDIA CUDA setup, GPU computing, deep-learning
+  frameworks, cuDNN, cross-platform GPU/CPU development → read `references/cuda.md`
 
 ## Working Style & Structure
 
@@ -116,8 +119,8 @@ many versions:
 - `[vars]`: Static variables
 - `[hook]`: Non-interactive setup scripts
 - `[profile]`: Shell-specific functions/aliases
-- `[services]`: Service definitions (see flox-services skill)
-- `[build]`: Reproducible build commands (see flox-builds skill)
+- `[services]`: Service definitions (see `references/services.md`)
+- `[build]`: Reproducible build commands (see `references/builds.md`)
 - `[include]`: Compose other environments (see `references/sharing.md`)
 - `[options]`: Activation mode, supported systems
 
@@ -179,7 +182,7 @@ example.priority = 3                        # Optional: resolve file conflicts (
 - Resolves file conflicts between packages
 - Default: 5
 - Lower number = higher priority wins conflicts
-- **Critical for CUDA packages** (see flox-cuda skill)
+- **Critical for CUDA packages** (see `references/cuda.md`)
 
 ### Practical Examples
 
@@ -308,10 +311,3 @@ If packages conflict, use different `pkg-group` values or adjust `priority`
 - Define env vars with `${VAR:-default}`
 - Guard FLOX_ENV_CACHE usage: `${FLOX_ENV_CACHE:-}` with fallback
 
-## Related Skills
-
-- **flox-services** - Running services and background processes
-- **flox-builds** - Building and packaging applications
-- **flox-publish** - Publishing packages to catalogs
-- **flox-containers** - Containerizing environments
-- **flox-cuda** - CUDA/GPU development environments
