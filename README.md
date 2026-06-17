@@ -10,7 +10,7 @@ This project includes specialized knowledge and tooling for Flox workflows, best
 
 ### Skills Library
 
-The repository includes six specialized skills, each focused on a specific aspect of Flox:
+The repository includes five specialized skills, each focused on a specific aspect of Flox:
 
 #### 1. **flox-environments**
 Manage reproducible development environments with Flox. This is the foundational skill that should be used first when creating any new project. Covers:
@@ -19,15 +19,9 @@ Manage reproducible development environments with Flox. This is the foundational
 - Environment configuration and secrets management
 - Reproducible development workflows
 - Sharing, composing, and layering environments — composition via `[include]`, remote environments, FloxHub, team collaboration (see `references/sharing.md`)
+- Running services, background processes, and databases (see `references/services.md`)
 
-#### 2. **flox-services**
-Running services and background processes in Flox environments. Covers:
-- Service configuration and lifecycle management
-- Network services (HTTP servers, databases, etc.)
-- Logging and debugging patterns
-- Service orchestration
-
-#### 3. **flox-builds**
+#### 2. **flox-builds**
 Building and packaging applications with Flox. Covers:
 - Manifest builds for quick iteration
 - Nix expression builds for guaranteed reproducibility
@@ -35,21 +29,21 @@ Building and packaging applications with Flox. Covers:
 - Multi-stage builds
 - Packaging assets and artifacts
 
-#### 4. **flox-containers**
+#### 3. **flox-containers**
 Containerizing Flox environments with Docker/Podman. Covers:
 - Creating container images from Flox environments
 - OCI exports
 - Multi-stage container builds
 - Deployment workflows
 
-#### 5. **flox-publish**
+#### 4. **flox-publish**
 Publishing packages to Flox for distribution and sharing. Covers:
 - Package publishing workflows
 - Organization and personal namespace management
 - Package versioning and distribution
 - Sharing built packages across teams
 
-#### 6. **flox-cuda**
+#### 5. **flox-cuda**
 CUDA and GPU development with Flox (Linux only). Covers:
 - NVIDIA CUDA toolkit setup
 - GPU computing workflows
@@ -115,7 +109,6 @@ Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 
 For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
 - `skills/flox-environments/SKILL.md`
-- `skills/flox-services/SKILL.md`
 - `skills/flox-builds/SKILL.md`
 - `skills/flox-containers/SKILL.md`
 - `skills/flox-publish/SKILL.md`

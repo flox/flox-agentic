@@ -17,6 +17,8 @@ manifest sections, gotchas) and go well beyond general knowledge.
 - **Sharing, composition & layering** — composing environments via `[include]`,
   runtime layering, remote environments, push/pull, FloxHub, team collaboration
   → read `references/sharing.md`
+- **Services** — background processes, daemons, databases, logging, service
+  debugging → read `references/services.md`
 
 ## Working Style & Structure
 

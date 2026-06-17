@@ -1,8 +1,3 @@
----
-name: flox-services
-description: Running services and background processes in Flox environments. Use for service configuration, network services, logging, database setup, and service debugging.
----
-
 # Flox Services Guide
 
 ## Running Services in Flox Environments
@@ -291,8 +286,3 @@ Always `mkdir -p` for data directories in service commands.
 ### Port Conflicts
 Use configurable ports via variables to avoid conflicts with other services.
 
-## Related Skills
-
-- **flox-environments** - Environment basics and package installation
-- **flox-sharing** - Composing environments with shared services
-- **flox-containers** - Running services in containers
