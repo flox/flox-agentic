@@ -1,25 +1,30 @@
 # Flox Agentic Tools
 
-This repository provides tools and integrations for AI agents to work with Flox, offering expert guidance and automation for Flox development environments, builds, services, and deployments.
-
-## Overview
-
-This project includes specialized knowledge and tooling for Flox workflows, best practices, and patterns. It provides a comprehensive set of skills covering the entire Flox development lifecycle, from environment setup to production deployment, accessible through multiple AI agent platforms.
+This repository provides skills for AI agents to work with Flox. Both Claude 
+and Codex plugins are available.
 
 ## Components
 
 ### Flox MCP Server
 
-The Flox MCP (Model Context Protocol) server provides agents with direct access to Flox functionality through structured tool interfaces. It enables seamless environment management and workflow automation with better guardrails, since all environment management happens through MCP tool commands and does not require `bash` access.
+The Flox MCP (Model Context Protocol) server provides agents with direct access
+to Flox functionality through structured tool interfaces. It enables seamless
+environment management and workflow automation with better guardrails, since all
+environment management happens through MCP tool commands and does not require
+`bash` access.
 
-The MCP server uses the `stdio` transport, so there's no service that runs—as long as `flox-mcp` is on your PATH, it will work.
+The MCP server uses the `stdio` transport, so there's no service that runs—as
+long as `flox-mcp` is on your PATH, it will work.
 
 ### Skills Library
 
-The repository includes seven specialized skills, each focused on a specific aspect of Flox:
+The repository includes seven specialized skills, each focused on a specific
+aspect of Flox:
 
 #### 1. **flox-environments**
-Manage reproducible development environments with Flox. This is the foundational skill that should be used first when creating any new project. Covers:
+Manage reproducible development environments with Flox. This is the
+foundational skill that should be used first when creating any new project.
+Covers:
 - Installing packages and managing dependencies
 - Python, Node.js, and Go environment setup
 - Environment configuration and secrets management
@@ -74,47 +79,54 @@ CUDA and GPU development with Flox (Linux only). Covers:
 ### Prerequisites
 
 - Flox CLI installed and configured
-- For GPU development: Linux system with NVIDIA GPU (aarch64-linux or x86_64-linux)
+- For GPU development: Linux system with NVIDIA GPU (aarch64-linux or
+  x86_64-linux)
 
 ### Install the Flox MCP Server
 
-First, install the Flox MCP server package into an environment, ideally your default environment:
+First, install the Flox MCP server package into an environment, ideally your
+default environment:
 
 ```bash
 flox install flox/flox-mcp-server
 ```
 
-Or you can make it available without installing by running the `flox/flox-mcp-server` remote environment:
+Or you can make it available without installing by running the
+`flox/flox-mcp-server` remote environment:
 
 ```bash
 flox activate -r flox/flox-mcp-server
 ```
 
-### Application-Specific Setup
+### Plugin Setup
+
+Flox ships first-class plugin manifests for both Claude Code and Codex. Both
+plugins use the same shared skill library in `flox-plugin/skills` and the same
+Flox MCP server configuration in `flox-plugin/.mcp.json`.
 
 #### Claude Code
 
-The Flox plugin for Claude Code provides comprehensive Flox integration, including package management, environment composition, service orchestration, build system configuration, containerization, publishing, and CUDA support. The plugin includes both MCP server configuration and the Skills library as native Claude skills.
+The Flox plugin for Claude Code is defined in
+`flox-plugin/.claude-plugin/plugin.json`. It provides native Claude skills for
+Flox environment setup, services, builds, containers, publishing, sharing, and
+CUDA workflows.
 
-**Install the Plugin:**
-
-From within Claude Code:
+Install the plugin from within Claude Code:
 
 ```bash
 /plugin marketplace add flox/flox-agentic
 /plugin install flox@flox-agentic
 ```
 
-Or from the command line:
+Or install it from the command line:
 
 ```bash
 claude plugin marketplace add flox/flox-agentic
 claude plugin install flox@flox-agentic
 ```
 
-**Configure MCP Server:**
-
-The plugin handles MCP server configuration automatically when used. You can also configure it manually:
+The plugin includes MCP server configuration. You can also configure the MCP
+server manually:
 
 ```bash
 # Per project:
@@ -124,17 +136,39 @@ claude mcp add flox -- flox-mcp
 claude mcp add --scope user flox -- flox-mcp
 ```
 
-**Getting Started:**
+#### Codex
 
-Once installed, the plugin automatically activates. Claude Code will use the appropriate skill based on your task:
+The Flox plugin for Codex is defined in `flox-plugin/.codex-plugin/plugin.json`.
+It provides native Codex skills for Flox environment setup, services, builds,
+containers, publishing, sharing, and CUDA workflows.
+
+For local development, add this repository as a Codex marketplace and install
+the plugin:
+
+```bash
+codex plugin marketplace add . # in top-level directory for this repo
+codex plugin add flox@flox-agentic
+```
+
+This registers the local marketplace in your Codex user configuration and
+enables the plugin for new Codex sessions.
+
+#### Getting Started
+
+Once installed, Codex or Claude Code will use the appropriate Flox skill based
+on your task:
 - Creating a new project? The **flox-environments** skill activates first
 - Setting up services? The **flox-services** skill provides guidance
 - Building packages? The **flox-builds** skill helps with manifest or Nix builds
-- Deploying containers? The **flox-containers** skill assists with containerization
+- Deploying containers? The **flox-containers** skill assists with
+  containerization
+
+### MCP-Only Setup
 
 #### Cursor
 
-Make sure the MCP server is available (see "Install the Flox MCP Server" above), then add it to your MCP configuration file at `~/.cursor/mcp.json`:
+Make sure the MCP server is available (see "Install the Flox MCP Server"
+above), then add it to your MCP configuration file at `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -148,7 +182,9 @@ Make sure the MCP server is available (see "Install the Flox MCP Server" above),
 
 #### Kiro
 
-For Kiro, create a configuration file in `.kiro/settings/mcp.json` for workspace-specific settings or `~/.kiro/settings/mcp.json` for user-wide settings:
+For Kiro, create a configuration file in `.kiro/settings/mcp.json` for
+workspace-specific settings or `~/.kiro/settings/mcp.json` for user-wide
+settings:
 
 ```json
 {
@@ -185,14 +221,15 @@ ensuring `flox-mcp` is available in your PATH.
 
 ## Documentation
 
-For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
-- `skills/flox-environments/SKILL.md`
-- `skills/flox-services/SKILL.md`
-- `skills/flox-builds/SKILL.md`
-- `skills/flox-containers/SKILL.md`
-- `skills/flox-publish/SKILL.md`
-- `skills/flox-sharing/SKILL.md`
-- `skills/flox-cuda/SKILL.md`
+For detailed documentation on each skill, see the individual SKILL.md files in
+the `flox-plugin/skills/` directory:
+- `flox-plugin/skills/flox-environments/SKILL.md`
+- `flox-plugin/skills/flox-services/SKILL.md`
+- `flox-plugin/skills/flox-builds/SKILL.md`
+- `flox-plugin/skills/flox-containers/SKILL.md`
+- `flox-plugin/skills/flox-publish/SKILL.md`
+- `flox-plugin/skills/flox-sharing/SKILL.md`
+- `flox-plugin/skills/flox-cuda/SKILL.md`
 
 ## Contributing
 

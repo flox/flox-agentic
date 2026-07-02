@@ -1,0 +1,38 @@
+{
+  "name": "flox",
+  "version": "1.0.0",
+  "description": "Flox development environment and deployment plugin. Includes expert guidance for package management, services, builds and package distribution, containerization, environment composition and layering. Works with the Flox MCP server for enhanced functionality.",
+  "author": {
+    "name": "Flox",
+    "url": "https://flox.dev/"
+  },
+  "homepage": "https://flox.dev/",
+  "repository": "https://github.com/flox/flox-agentic",
+  "license": "Apache-2.0",
+  "keywords": [
+    "flox",
+    "nix",
+    "developer-environments",
+    "mcp",
+    "builds",
+    "containers"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Flox",
+    "shortDescription": "Build and manage reproducible Flox development environments.",
+    "longDescription": "Use Flox skills and the Flox MCP server to create reproducible environments, manage packages and services, build and publish packages, containerize environments, share environment layers, and configure CUDA workflows.",
+    "developerName": "Flox",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://flox.dev/",
+    "defaultPrompt": [
+      "Set up a reproducible Flox environment for this project."
+    ],
+    "brandColor": "#0B7F75"
+  }
+}
