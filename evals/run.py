@@ -54,21 +54,22 @@ ABS_PATH = re.compile(r'=\s*"(/home/|/Users/|/usr/local/|/opt/|/root/)', re.I)
 _SECRET_NAME = (
     r"(?:SECRET|TOKEN|PASSWORD|PASSWD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)"
 )
-# A secret-named key (optionally quoted, with any prefix/suffix), at a line start
-# or inside an inline table / after a comma, consumed up to and including its `=`.
-SECRET_KEY = re.compile(
+# Matches a secret-named key (optionally quoted, any prefix/suffix; at a line
+# start or inside an inline table / after a comma) and captures its value token:
+# an array, a triple-quoted string, or a single-/double-quoted string. The
+# quote-specific alternatives let a value contain the *other* quote char.
+SECRET_ASSIGN = re.compile(
     r"(?im)(?:^|[{,])[ \t]*(?:export[ \t]+)?"
     r"[\"']?[\w.-]*" + _SECRET_NAME + r"[\w.-]*[\"']?[ \t]*=[ \t]*"
+    r"(\[[^\]\n]*\]|\"\"\".*?\"\"\"|'''.*?'''|\"[^\"\n]*\"|'[^'\n]*')"
 )
-# A value is an allowed placeholder / non-literal if it begins (after stripping
-# surrounding quotes) with any of these.
+# A value is an allowed placeholder / non-literal if it begins with any of these.
 PLACEHOLDER_VALUE = re.compile(
     r"(?i)^\s*(?:\$|<|\{\{|\*{3,}|x{3,}|changeme|change_me|placeholder|your[_-]|"
     r"example|dummy|redact|todo|fixme|replace|sample|fake|none|null)"
 )
-# Matches the string literal at the start of a value: basic/literal, single- or
-# triple-quoted; the backreference lets a value contain the *other* quote char.
-_QUOTED = re.compile(r"(\"\"\"|'''|[\"'])(.*?)\1", re.S)
+# Extracts the inner text of each quoted string in a value token (for arrays).
+_QUOTED_INNER = re.compile(r"\"([^\"\n]*)\"|'([^'\n]*)'")
 
 
 def toml_blocks(text):
@@ -77,29 +78,25 @@ def toml_blocks(text):
     return "\n".join(re.findall(r"```(?:toml)?\r?\n(.*?)```", text, re.S))
 
 
-def _string_values(rhs):
-    """Yield the literal string value(s) at the start of a manifest RHS: a single
-    quoted value, a triple-quoted value, or the elements of an array. Bare
-    (non-string) values yield nothing."""
-    rhs = rhs.lstrip()
-    if rhs[:1] == "[":
-        inner = re.match(r"\[(.*?)\]", rhs, re.S)
-        if inner:
-            for m in _QUOTED.finditer(inner.group(1)):
-                yield m.group(2)
-        return
-    m = _QUOTED.match(rhs)
-    if m:
-        yield m.group(2)
+def _real_literal(token):
+    """True if a captured value token holds at least one real (non-empty,
+    non-placeholder) literal. `token` is an array or a quoted string."""
+    if token.startswith("["):
+        values = [dq or sq for dq, sq in _QUOTED_INNER.findall(token)]
+    else:
+        values = [token.strip("\"'")]
+    return any(v.strip() and not PLACEHOLDER_VALUE.match(v) for v in values)
 
 
 def has_hardcoded_secret(text):
-    """True if a manifest block assigns a real literal to a secret-named key."""
-    for key in SECRET_KEY.finditer(text):
-        for value in _string_values(text[key.end():]):
-            if value.strip() and not PLACEHOLDER_VALUE.match(value):
-                return True
-    return False
+    """True if a manifest block assigns a real literal to a secret-named key.
+
+    Single linear pass: SECRET_ASSIGN.finditer walks the text once and captures
+    each secret-named key's value token; _real_literal then classifies that
+    token in time proportional to its own (small) length. So this is O(n) in the
+    manifest size — no per-match slicing or nested rescans of the text.
+    """
+    return any(_real_literal(m.group(1)) for m in SECRET_ASSIGN.finditer(text))
 
 
 CHECKS = {
