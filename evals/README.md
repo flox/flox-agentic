@@ -50,6 +50,18 @@ python3 run.py --mode skills --gate     # exit non-zero if binding gates fail (C
 Results land in `results/<mode>.json` with a summary (hard-pass rate, avg judge
 score, correct rate). Pure stdlib — no node/uv required.
 
+## Tests
+
+The deterministic hard-checks (the regex logic that binds the gate) have their
+own fast unit tests — no API key, no network, runs in milliseconds:
+
+```bash
+python3 -m unittest test_checks -v
+```
+
+CI runs these first (the `unit` job) and only proceeds to the claude-based eval
+gate if they pass.
+
 ## Authentication
 
 The harness shells out to `claude`, which needs credentials:

@@ -18,7 +18,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Fast, deterministic unit tests for the hard-checks (the regex logic that
+  # binds the gate). No API key / network — always runs and fails fast if the
+  # check logic regresses, before spending on the claude-based eval job.
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Run hard-check unit tests
+        working-directory: evals
+        run: python3 -m unittest test_checks -v
+
   evals:
+    needs: unit
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
