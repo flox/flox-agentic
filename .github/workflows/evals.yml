@@ -31,9 +31,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run hard-check unit tests
+      - name: Run unit tests
         working-directory: evals
-        run: python3 -m unittest test_checks -v
+        run: python3 -m unittest discover -s tests -t . -v
 
   evals:
     needs: unit

@@ -4,9 +4,11 @@
 These are the checks that bind the CI gate (run.py --gate), so they must be
 correct and stable independent of the LLM agent/judge. This suite is pure
 stdlib (unittest) — no pytest, no node, no network, no ANTHROPIC_API_KEY — so
-it runs in milliseconds and gates every PR cheaply:
+it runs in milliseconds and gates every PR cheaply. Run all eval tests with:
 
-    python3 -m unittest evals/test_checks.py -v
+    cd evals && python3 -m unittest discover -v
+
+(`from run import ...` works because tests/__init__.py puts evals/ on sys.path.)
 """
 import unittest
 

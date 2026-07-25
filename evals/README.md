@@ -52,15 +52,24 @@ score, correct rate). Pure stdlib — no node/uv required.
 
 ## Tests
 
-The deterministic hard-checks (the regex logic that binds the gate) have their
-own fast unit tests — no API key, no network, runs in milliseconds:
+The deterministic hard-checks (the regex logic that binds the gate) have fast
+unit tests in `tests/` — pure stdlib `unittest`, no API key, no network, runs in
+milliseconds:
 
 ```bash
-python3 -m unittest test_checks -v
+cd evals
+python3 -m unittest discover -v          # run everything under tests/
+python3 -m unittest tests.test_checks    # a single module
 ```
 
 CI runs these first (the `unit` job) and only proceeds to the claude-based eval
 gate if they pass.
+
+**Adding tests:** drop a `test_<area>.py` file in `tests/`. Discovery picks it
+up automatically — no CI or config changes needed. Test files can `from run
+import ...` directly (`tests/__init__.py` puts `evals/` on `sys.path`). The
+layout is also pytest-compatible (`pytest tests/`) if you prefer, though nothing
+in the suite requires pytest.
 
 ## Authentication
 
