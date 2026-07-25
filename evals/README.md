@@ -18,8 +18,8 @@ For every task in `tasks.jsonl`, runs `claude` headless with the Flox plugin
 loaded and scores the answer two ways:
 
 - **Hard checks** — deterministic regex checks (no hallucinated install URL, no
-  absolute paths in manifests, required manifest sections present, correct
-  commands used).
+  absolute paths in manifests, no hardcoded secrets in manifests, required
+  manifest sections present, correct commands used).
 - **LLM judge** — a separate `claude` call grades the answer 1–5 against the
   task's rubric and returns a pass/fail.
 

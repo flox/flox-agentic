@@ -44,14 +44,16 @@ FAKE_INSTALL = re.compile(
 ABS_PATH = re.compile(r'=\s*"(/home/|/Users/|/usr/local/|/opt/|/root/)', re.I)
 # Flags a secret hardcoded into the manifest (the flox-environments skill rule:
 # "Never store secrets in manifest"). Matches a secret-named key assigned a
-# literal value, while allowing env references ($VAR / ${VAR}) and obvious
-# placeholders (<...>, {{...}}, your-, changeme, example, etc.).
+# literal value in either quote style (TOML basic "..." or literal '...'), while
+# allowing env references ($VAR / ${VAR}) and obvious placeholders (<...>,
+# {{...}}, your-, changeme, example, etc.).
 HARDCODED_SECRET = re.compile(
     r'(?im)^\s*(?:export\s+)?[\w.-]*'
     r'(?:SECRET|TOKEN|PASSWORD|PASSWD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)'
     r'[\w.-]*\s*=\s*'
-    r'"(?!\s*(?:\$|<|\{\{|changeme|change_me|x{3,}|placeholder|your[_-]|example|dummy|redacted))'
-    r'[^"\n]+"'
+    r'(?P<q>["\'])'
+    r'(?!\s*(?:\$|<|\{\{|changeme|change_me|x{3,}|placeholder|your[_-]|example|dummy|redacted))'
+    r'[^"\'\n]+(?P=q)'
 )
 
 
