@@ -42,6 +42,17 @@ FAKE_INSTALL = re.compile(
     r"install\.flox\.dev|flox\.dev/install|curl[^\n]*flox[^\n]*\|\s*(ba)?sh", re.I
 )
 ABS_PATH = re.compile(r'=\s*"(/home/|/Users/|/usr/local/|/opt/|/root/)', re.I)
+# Flags a secret hardcoded into the manifest (the flox-environments skill rule:
+# "Never store secrets in manifest"). Matches a secret-named key assigned a
+# literal value, while allowing env references ($VAR / ${VAR}) and obvious
+# placeholders (<...>, {{...}}, your-, changeme, example, etc.).
+HARDCODED_SECRET = re.compile(
+    r'(?im)^\s*(?:export\s+)?[\w.-]*'
+    r'(?:SECRET|TOKEN|PASSWORD|PASSWD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)'
+    r'[\w.-]*\s*=\s*'
+    r'"(?!\s*(?:\$|<|\{\{|changeme|change_me|x{3,}|placeholder|your[_-]|example|dummy|redacted))'
+    r'[^"\n]+"'
+)
 
 
 def toml_blocks(text):
@@ -51,6 +62,9 @@ def toml_blocks(text):
 CHECKS = {
     "no_fake_install_url": lambda a: not FAKE_INSTALL.search(a),
     "no_abs_paths": lambda a: not ABS_PATH.search(toml_blocks(a)),
+    # No secret hardcoded into the manifest (secrets belong in env vars /
+    # ~/.config/<env>/ / existing credential files, not the committed manifest).
+    "no_hardcoded_secret": lambda a: not HARDCODED_SECRET.search(toml_blocks(a)),
     "has_install_section": lambda a: "[install]" in a,
     "has_services_section": lambda a: "[services" in a,
     "has_build_section": lambda a: "[build" in a,
