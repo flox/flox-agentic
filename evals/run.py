@@ -42,23 +42,64 @@ FAKE_INSTALL = re.compile(
     r"install\.flox\.dev|flox\.dev/install|curl[^\n]*flox[^\n]*\|\s*(ba)?sh", re.I
 )
 ABS_PATH = re.compile(r'=\s*"(/home/|/Users/|/usr/local/|/opt/|/root/)', re.I)
-# Flags a secret hardcoded into the manifest (the flox-environments skill rule:
-# "Never store secrets in manifest"). Matches a secret-named key assigned a
-# literal value in either quote style (TOML basic "..." or literal '...'), while
-# allowing env references ($VAR / ${VAR}) and obvious placeholders (<...>,
-# {{...}}, your-, changeme, example, etc.).
-HARDCODED_SECRET = re.compile(
-    r'(?im)^\s*(?:export\s+)?[\w.-]*'
-    r'(?:SECRET|TOKEN|PASSWORD|PASSWD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)'
-    r'[\w.-]*\s*=\s*'
-    r'(?P<q>["\'])'
-    r'(?!\s*(?:\$|<|\{\{|changeme|change_me|x{3,}|placeholder|your[_-]|example|dummy|redacted))'
-    r'[^"\'\n]+(?P=q)'
+# --- hardcoded-secret detection --------------------------------------------
+# The flox-environments skill rule is "Never store secrets in manifest" (use env
+# vars / ~/.config/<env>/ / existing credential files). We flag a secret-named
+# key assigned a *literal* value anywhere in a manifest block, while allowing env
+# references ($VAR / ${VAR}) and obvious placeholders. Detection is name-based
+# and covers bare or quoted keys, inline tables ({ ... }), and arrays ([ ... ]).
+# Known limits (name-based detection can't help it): a secret hidden in a
+# NON-secret-named key's value is not caught, and a real value that happens to
+# begin with a placeholder token (e.g. "example...") is treated as a placeholder.
+_SECRET_NAME = (
+    r"(?:SECRET|TOKEN|PASSWORD|PASSWD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)"
 )
+# A secret-named key (optionally quoted, with any prefix/suffix), at a line start
+# or inside an inline table / after a comma, consumed up to and including its `=`.
+SECRET_KEY = re.compile(
+    r"(?im)(?:^|[{,])[ \t]*(?:export[ \t]+)?"
+    r"[\"']?[\w.-]*" + _SECRET_NAME + r"[\w.-]*[\"']?[ \t]*=[ \t]*"
+)
+# A value is an allowed placeholder / non-literal if it begins (after stripping
+# surrounding quotes) with any of these.
+PLACEHOLDER_VALUE = re.compile(
+    r"(?i)^\s*(?:\$|<|\{\{|\*{3,}|x{3,}|changeme|change_me|placeholder|your[_-]|"
+    r"example|dummy|redact|todo|fixme|replace|sample|fake|none|null)"
+)
+# Matches the string literal at the start of a value: basic/literal, single- or
+# triple-quoted; the backreference lets a value contain the *other* quote char.
+_QUOTED = re.compile(r"(\"\"\"|'''|[\"'])(.*?)\1", re.S)
 
 
 def toml_blocks(text):
-    return "\n".join(re.findall(r"```(?:toml)?\n(.*?)```", text, re.S))
+    # ```toml and bare ``` fences only (not ```bash/```python). \r? so CRLF
+    # answers aren't silently skipped, which would disable every manifest check.
+    return "\n".join(re.findall(r"```(?:toml)?\r?\n(.*?)```", text, re.S))
+
+
+def _string_values(rhs):
+    """Yield the literal string value(s) at the start of a manifest RHS: a single
+    quoted value, a triple-quoted value, or the elements of an array. Bare
+    (non-string) values yield nothing."""
+    rhs = rhs.lstrip()
+    if rhs[:1] == "[":
+        inner = re.match(r"\[(.*?)\]", rhs, re.S)
+        if inner:
+            for m in _QUOTED.finditer(inner.group(1)):
+                yield m.group(2)
+        return
+    m = _QUOTED.match(rhs)
+    if m:
+        yield m.group(2)
+
+
+def has_hardcoded_secret(text):
+    """True if a manifest block assigns a real literal to a secret-named key."""
+    for key in SECRET_KEY.finditer(text):
+        for value in _string_values(text[key.end():]):
+            if value.strip() and not PLACEHOLDER_VALUE.match(value):
+                return True
+    return False
 
 
 CHECKS = {
@@ -66,7 +107,7 @@ CHECKS = {
     "no_abs_paths": lambda a: not ABS_PATH.search(toml_blocks(a)),
     # No secret hardcoded into the manifest (secrets belong in env vars /
     # ~/.config/<env>/ / existing credential files, not the committed manifest).
-    "no_hardcoded_secret": lambda a: not HARDCODED_SECRET.search(toml_blocks(a)),
+    "no_hardcoded_secret": lambda a: not has_hardcoded_secret(toml_blocks(a)),
     "has_install_section": lambda a: "[install]" in a,
     "has_services_section": lambda a: "[services" in a,
     "has_build_section": lambda a: "[build" in a,
