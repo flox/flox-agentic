@@ -1,5 +1,28 @@
 # Flox Agentic Tools
 
+> **DEPRECATED — this repository has MOVED to
+> [flox/flox-skills](https://github.com/flox/flox-skills).**
+>
+> `flox/flox-agentic` is frozen: no further updates, and it will be archived
+> on **2026-09-30**. Everything below is retained for reference only.
+>
+> **Switch to the maintained plugin (Claude Code):**
+>
+> ```bash
+> claude plugin marketplace add flox/flox-skills
+> claude plugin install flox@flox-skills
+> ```
+>
+> **Then remove this one:**
+>
+> ```bash
+> claude plugin uninstall flox@flox-agentic
+> claude plugin marketplace remove flox-agentic
+> ```
+>
+> For other agents, see the
+> [flox-skills README](https://github.com/flox/flox-skills#readme).
+
 This repository provides tools and integrations for AI agents to work with Flox, offering expert guidance and automation for Flox development environments, builds, services, and deployments.
 
 ## Overview
@@ -168,11 +191,13 @@ can install the full Flox skills library with a single command (requires
 Node.js):
 
 ```bash
-npx skills add flox/flox-agentic
+npx skills add flox/flox-skills
 ```
 
-This installs all seven Flox skills into your agent's context, covering
-environments, services, builds, containers, publishing, sharing, and CUDA.
+This installs the two maintained Flox skills into your agent's context: `flox`
+(reproducible environments, with reference guides for services, builds,
+containers, publishing, sharing, and CUDA) and `floxify` (onboarding an
+existing repo to Flox).
 Supported agents include Cursor, GitHub Copilot, Windsurf, Gemini, and
 [many others](https://skills.sh).
 
@@ -185,14 +210,14 @@ ensuring `flox-mcp` is available in your PATH.
 
 ## Documentation
 
-For detailed documentation on each skill, see the individual SKILL.md files in the `skills/` directory:
-- `skills/flox-environments/SKILL.md`
-- `skills/flox-services/SKILL.md`
-- `skills/flox-builds/SKILL.md`
-- `skills/flox-containers/SKILL.md`
-- `skills/flox-publish/SKILL.md`
-- `skills/flox-sharing/SKILL.md`
-- `skills/flox-cuda/SKILL.md`
+For detailed documentation on each skill, see the individual SKILL.md files in the `flox-plugin/skills/` directory:
+- `flox-plugin/skills/flox-environments/SKILL.md`
+- `flox-plugin/skills/flox-services/SKILL.md`
+- `flox-plugin/skills/flox-builds/SKILL.md`
+- `flox-plugin/skills/flox-containers/SKILL.md`
+- `flox-plugin/skills/flox-publish/SKILL.md`
+- `flox-plugin/skills/flox-sharing/SKILL.md`
+- `flox-plugin/skills/flox-cuda/SKILL.md`
 
 ## Contributing
 
