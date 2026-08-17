@@ -7,7 +7,7 @@
     {
       "name": "flox",
       "source": "./flox-plugin",
-      "description": "Flox development environment and deployment plugin. Includes expert guidance for package management, services, builds and package distribution, containerization, environment composition and layering. Works with the Flox MCP server for enhanced functionality."
+      "description": "MOVED to flox/flox-skills — this plugin is deprecated and frozen, and will be archived on 2026-09-30. Install flox@flox-skills instead (claude plugin marketplace add flox/flox-skills; claude plugin install flox@flox-skills), then remove this one (claude plugin uninstall flox@flox-agentic; claude plugin marketplace remove flox-agentic). Formerly: Flox development environment and deployment plugin. Includes expert guidance for package management, services, builds and package distribution, containerization, environment composition and layering. Works with the Flox MCP server for enhanced functionality."
     }
   ]
 }
