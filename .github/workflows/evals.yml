@@ -6,11 +6,6 @@ name: skill-evals
 # probabilistic, so they're reported but never block. Agent + judge run via
 # `claude`, authenticated with the org-managed Anthropic key.
 on:
-  pull_request:
-    paths:
-      - "flox-plugin/**"
-      - "evals/**"
-      - ".github/workflows/evals.yml"
   workflow_dispatch: {}
 
 concurrency:
@@ -19,6 +14,7 @@ concurrency:
 
 jobs:
   evals:
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
