@@ -3,8 +3,9 @@
 > **DEPRECATED — this repository has MOVED to
 > [flox/flox-skills](https://github.com/flox/flox-skills).**
 >
-> `flox/flox-agentic` is frozen: no further updates, and it will be archived
-> on **2026-09-30**. Everything below is retained for reference only.
+> `flox/flox-agentic` is archived and receives no updates. Everything below
+> is retained for reference only, including the Flox MCP server, which is
+> retired.
 >
 > **Switch to the maintained plugin (Claude Code):**
 >
